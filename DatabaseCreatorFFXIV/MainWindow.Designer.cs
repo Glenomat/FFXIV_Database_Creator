@@ -53,6 +53,8 @@
             this.progBarPageProgess = new System.Windows.Forms.ProgressBar();
             this.lblPageView = new System.Windows.Forms.Label();
             this.lbSteps = new System.Windows.Forms.ListBox();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.pnlFormBorder.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -115,7 +117,7 @@
             // chbTextCommands
             // 
             this.chbTextCommands.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbTextCommands.Location = new System.Drawing.Point(7, 271);
+            this.chbTextCommands.Location = new System.Drawing.Point(11, 278);
             this.chbTextCommands.Name = "chbTextCommands";
             this.chbTextCommands.Size = new System.Drawing.Size(140, 27);
             this.chbTextCommands.TabIndex = 7;
@@ -125,7 +127,7 @@
             // chbGathering
             // 
             this.chbGathering.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbGathering.Location = new System.Drawing.Point(7, 172);
+            this.chbGathering.Location = new System.Drawing.Point(11, 179);
             this.chbGathering.Name = "chbGathering";
             this.chbGathering.Size = new System.Drawing.Size(140, 27);
             this.chbGathering.TabIndex = 4;
@@ -135,7 +137,7 @@
             // chbRecipies
             // 
             this.chbRecipies.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbRecipies.Location = new System.Drawing.Point(7, 139);
+            this.chbRecipies.Location = new System.Drawing.Point(11, 146);
             this.chbRecipies.Name = "chbRecipies";
             this.chbRecipies.Size = new System.Drawing.Size(140, 27);
             this.chbRecipies.TabIndex = 3;
@@ -145,7 +147,7 @@
             // chbQuests
             // 
             this.chbQuests.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbQuests.Location = new System.Drawing.Point(7, 106);
+            this.chbQuests.Location = new System.Drawing.Point(11, 113);
             this.chbQuests.Name = "chbQuests";
             this.chbQuests.Size = new System.Drawing.Size(140, 27);
             this.chbQuests.TabIndex = 2;
@@ -155,7 +157,7 @@
             // chbShops
             // 
             this.chbShops.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbShops.Location = new System.Drawing.Point(7, 238);
+            this.chbShops.Location = new System.Drawing.Point(11, 245);
             this.chbShops.Name = "chbShops";
             this.chbShops.Size = new System.Drawing.Size(140, 27);
             this.chbShops.TabIndex = 6;
@@ -165,7 +167,7 @@
             // chbAchivements
             // 
             this.chbAchivements.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbAchivements.Location = new System.Drawing.Point(7, 205);
+            this.chbAchivements.Location = new System.Drawing.Point(11, 212);
             this.chbAchivements.Name = "chbAchivements";
             this.chbAchivements.Size = new System.Drawing.Size(140, 27);
             this.chbAchivements.TabIndex = 5;
@@ -175,7 +177,7 @@
             // chbDutys
             // 
             this.chbDutys.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (202)))), ((int) (((byte) (209)))), ((int) (((byte) (255)))));
-            this.chbDutys.Location = new System.Drawing.Point(7, 73);
+            this.chbDutys.Location = new System.Drawing.Point(11, 80);
             this.chbDutys.Name = "chbDutys";
             this.chbDutys.Size = new System.Drawing.Size(140, 27);
             this.chbDutys.TabIndex = 1;
@@ -185,7 +187,7 @@
             // chbItems
             // 
             this.chbItems.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (211)))), ((int) (((byte) (233)))), ((int) (((byte) (255)))));
-            this.chbItems.Location = new System.Drawing.Point(7, 40);
+            this.chbItems.Location = new System.Drawing.Point(11, 47);
             this.chbItems.Name = "chbItems";
             this.chbItems.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.chbItems.Size = new System.Drawing.Size(140, 27);
@@ -217,7 +219,7 @@
             this.panel1.Controls.Add(this.chbTextCommands);
             this.panel1.Location = new System.Drawing.Point(0, 29);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(161, 311);
+            this.panel1.Size = new System.Drawing.Size(161, 361);
             this.panel1.TabIndex = 9;
             // 
             // btnRun
@@ -277,7 +279,7 @@
             this.panel2.Controls.Add(this.lblErrors);
             this.panel2.Controls.Add(this.button2);
             this.panel2.Controls.Add(this.btnRun);
-            this.panel2.Location = new System.Drawing.Point(161, 300);
+            this.panel2.Location = new System.Drawing.Point(163, 300);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(438, 40);
             this.panel2.TabIndex = 12;
@@ -294,7 +296,7 @@
             // 
             // progBarPageProgess
             // 
-            this.progBarPageProgess.Location = new System.Drawing.Point(167, 271);
+            this.progBarPageProgess.Location = new System.Drawing.Point(165, 267);
             this.progBarPageProgess.Name = "progBarPageProgess";
             this.progBarPageProgess.Size = new System.Drawing.Size(421, 23);
             this.progBarPageProgess.TabIndex = 15;
@@ -304,7 +306,7 @@
             // 
             this.lblPageView.AutoSize = true;
             this.lblPageView.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (195)))), ((int) (((byte) (145)))), ((int) (((byte) (255)))));
-            this.lblPageView.Location = new System.Drawing.Point(167, 255);
+            this.lblPageView.Location = new System.Drawing.Point(165, 251);
             this.lblPageView.Name = "lblPageView";
             this.lblPageView.Size = new System.Drawing.Size(0, 13);
             this.lblPageView.TabIndex = 16;
@@ -313,7 +315,6 @@
             // 
             this.lbSteps.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (47)))), ((int) (((byte) (45)))), ((int) (((byte) (64)))));
             this.lbSteps.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lbSteps.Enabled = false;
             this.lbSteps.ForeColor = System.Drawing.Color.FromArgb(((int) (((byte) (195)))), ((int) (((byte) (145)))), ((int) (((byte) (255)))));
             this.lbSteps.FormattingEnabled = true;
             this.lbSteps.Location = new System.Drawing.Point(167, 69);
@@ -322,12 +323,24 @@
             this.lbSteps.TabIndex = 17;
             this.lbSteps.Visible = false;
             // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(23, 23);
+            this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
+            // 
+            // toolStripDropDownButton2
+            // 
+            this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
+            this.toolStripDropDownButton2.Size = new System.Drawing.Size(23, 23);
+            this.toolStripDropDownButton2.Text = "toolStripDropDownButton2";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (57)))), ((int) (((byte) (54)))), ((int) (((byte) (77)))));
-            this.ClientSize = new System.Drawing.Size(600, 341);
+            this.ClientSize = new System.Drawing.Size(600, 343);
             this.ControlBox = false;
             this.Controls.Add(this.lbSteps);
             this.Controls.Add(this.lblPageView);
@@ -348,6 +361,9 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton2;
 
         private System.Windows.Forms.Label lblAppName;
         private System.Windows.Forms.Button btnClose;

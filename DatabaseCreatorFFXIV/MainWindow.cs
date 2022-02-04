@@ -45,10 +45,10 @@ namespace DatabaseCreatorFFXIV
         {
             lblErrors.Text = "";
 
-            var checks = CheckCheckboxes();
+            var checks = CheckScrapSettings();
             if (checks == null) return;
-            
-            ShowScrapUi();
+
+            btnRun.Enabled = false;
             scrapper = new Scrapper(lblCurrentlyScraping, lbSteps, lblPageView, progBarPageProgess, checks);
         }
         
@@ -68,26 +68,23 @@ namespace DatabaseCreatorFFXIV
         }
         #endregion
 
-        private Queue<string> CheckCheckboxes()
+        private Queue<string> CheckScrapSettings()
         {
+            // Creates temporary queue for all the sites to scrap
             var temp = new Queue<string>();
 
             foreach (var checkBox in checkBoxes)
             {
-                if(checkBox.Checked)
+                if (checkBox.Checked)
                     temp.Enqueue(checkBox.Text);
             }
 
+            // Checks if there are entries in the Queue and returns the queue when it has entries
             if (temp.Count != 0) return temp;
-            
+
+            // Displays an error when there are no entries in the queue
             lblErrors.Text = @"Please check a box";
             return null;
-        }
-
-        private void ShowScrapUi()
-        {
-            progBarPageProgess.Visible = true;
-            lbSteps.Visible = true;
         }
     }
 }
