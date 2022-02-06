@@ -41,7 +41,6 @@ namespace DatabaseCreatorFFXIV
             this.scrapItems = scrapItems;
 
             currentPage = 1;
-            doc = null;
             SetupPage();
         }
 

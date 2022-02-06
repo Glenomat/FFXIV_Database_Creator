@@ -23,68 +23,33 @@ namespace DatabaseCreatorFFXIV
         public MainWindow()
         {
             InitializeComponent();
-            
-            checkBoxes = new List<CheckBox>()
-            {
-                chbItems,
-                chbDutys,
-                chbQuests,
-                chbRecipies,
-                chbGathering,
-                chbAchivements,
-                chbShops,
-                chbTextCommands
-            };
         }
+        
 
-        #region Form Buttons
+        #region Title Bar
+        // private void pnlFormBorder_MouseDown(object sender, MouseEventArgs e)
+        // {
+        //     movX = e.X;
+        //     movY = e.Y;
+        // }
+        //
+        // private void pnlFormBorder_MouseMove(object sender, MouseEventArgs e)
+        // {
+        //     if (e.Button != MouseButtons.Left) return;
+        //     Location = new Point(MousePosition.X - movX, MousePosition.Y - movY);
+        // }
+        
         private void btnClose_Click(object sender, EventArgs e) => Application.Exit();
         private void btnMinimize_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
         
+        #endregion
+
+       
+
         private void btnRun_Click(object sender, EventArgs e)
         {
-            lblErrors.Text = "";
-
-            var checks = CheckScrapSettings();
-            if (checks == null) return;
-
-            btnRun.Enabled = false;
-            scrapper = new Scrapper(lblCurrentlyScraping, lbSteps, lblPageView, progBarPageProgess, checks);
-        }
-        
-        #endregion
-
-        #region Form Border
-        private void pnlFormBorder_MouseDown(object sender, MouseEventArgs e)
-        {
-            movX = e.X;
-            movY = e.Y;
-        }
-        
-        private void pnlFormBorder_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Left) return;
-            Location = new Point(MousePosition.X - movX, MousePosition.Y - movY);
-        }
-        #endregion
-
-        private Queue<string> CheckScrapSettings()
-        {
-            // Creates temporary queue for all the sites to scrap
-            var temp = new Queue<string>();
-
-            foreach (var checkBox in checkBoxes)
-            {
-                if (checkBox.Checked)
-                    temp.Enqueue(checkBox.Text);
-            }
-
-            // Checks if there are entries in the Queue and returns the queue when it has entries
-            if (temp.Count != 0) return temp;
-
-            // Displays an error when there are no entries in the queue
-            lblErrors.Text = @"Please check a box";
-            return null;
+            // Do Code Stuff
+            return;
         }
     }
 }
