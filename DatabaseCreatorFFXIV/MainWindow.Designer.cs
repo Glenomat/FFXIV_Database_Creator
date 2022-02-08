@@ -65,6 +65,8 @@
             this.pnlTitleBar.Name = "pnlTitleBar";
             this.pnlTitleBar.Size = new System.Drawing.Size(718, 22);
             this.pnlTitleBar.TabIndex = 0;
+            this.pnlTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDown);
+            this.pnlTitleBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMove);
             // 
             // lblTitle
             // 
@@ -78,6 +80,8 @@
             this.lblTitle.TabIndex = 2;
             this.lblTitle.Text = "FFXIV Database Creator";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTitle.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDown);
+            this.lblTitle.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMove);
             // 
             // btnMinimize
             // 
@@ -171,7 +175,7 @@
             this.chbAchivements.Name = "chbAchivements";
             this.chbAchivements.Size = new System.Drawing.Size(155, 28);
             this.chbAchivements.TabIndex = 10;
-            this.chbAchivements.Text = "Achivements";
+            this.chbAchivements.Text = "Achievements";
             this.chbAchivements.UseVisualStyleBackColor = true;
             // 
             // chbGathering

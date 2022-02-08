@@ -1,122 +1,170 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using DatabaseCreatorFFXIV.Managers;
 using HtmlAgilityPack;
-using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace DatabaseCreatorFFXIV
 {
     public class Scrapper
     {
-        #region UI Elements
-        private Label lblCurrentScrapping;
-        private ListBox lbStepsView;
-        private Label lblPageCount;
-        private ProgressBar progressBar;
-        #endregion
-        
-        private Queue<string> scrapItems;
-        private DatabaseManager databaseManager;
+        // Events to update the UI-Elements
+        public Action<string, float> OnProgressUpdate;
+        public Action<string> OnScrapUpdate;
+        public Action<string> OnViewUpdate;
 
-        #region Scrapper Variables
-        
-        private int currentPage;
-        private int maxPage;
-        private HtmlDocument doc;
-        private HtmlWeb web;
-        
-        #endregion
+        private int maxSites = 0;
 
-        public Scrapper(Label lblCurrentScrapping, ListBox lbStepsView, Label lblPageCount, ProgressBar progressBar, Queue<string> scrapItems)
+        private Dictionary<string, Queue<HtmlDocument>> siteQueue = new Dictionary<string, Queue<HtmlDocument>>();
+        private List<string> scraps = new List<string>();
+        private List<string> selectedItems;
+        
+        private Queue<string> tasksToRun = new Queue<string>();
+        private Task itemsOnSite;
+
+        public Scrapper(List<string> selectedItems)
         {
-            databaseManager = new DatabaseManager();
-            
-            this.lblCurrentScrapping = lblCurrentScrapping;
-            this.lbStepsView = lbStepsView;
-            this.lblPageCount = lblPageCount;
-            this.progressBar = progressBar;
-            this.scrapItems = scrapItems;
-
-            currentPage = 1;
-            SetupPage();
+            GetScraps(selectedItems);
         }
 
-        // private List<HtmlDocument> test = new List<HtmlDocument>();
-        // private void Test()
-        // {
-        //     for (int i = 0; i < 2; i++)
-        //     {
-        //         var temp = web.Load($"https://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?page={i}");
-        //         test.Add(temp);
-        //     }
-        //
-        //     lblCurrentScrapping.Text = "DONE";
-        // }
-
-        private void SetupPage()
+        public void Run()
         {
-            web = new HtmlWeb();
-
-            // Loads the first page
-            doc = web.Load($"https://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?page={currentPage}");
-            GetMaxPage();
-            
-            // Sets first basic values
-            progressBar.Maximum = maxPage;
-            progressBar.Value = currentPage;
-            lblPageCount.Text = $@"{currentPage} / {maxPage}";
-
-            progressBar.Visible = true;
-            lbStepsView.Visible = true;
-            
-            // Starts running the actual scrapping
-            Run();
+            foreach (var scrap in scraps)
+                Task.Run(() => LoadSites(scrap));
         }
-        
-        private void Run()
+
+        /// <summary>
+        /// Takes a list of strings and tries to get the corresponding string for the url
+        /// </summary>
+        /// <param name="selectedScraps">List of strings filled with the CheckBox names</param>
+        private void GetScraps(List<string> selectedScraps)
         {
-            while (currentPage < maxPage)
+            // Goes through all the selected Items 
+            foreach (var scrap in selectedScraps)
             {
-                var maxCount = doc.DocumentNode
-                    .SelectNodes("/html/body/div[3]/div[2]/div[1]/div/div[2]/div[2]/div[5]/div/table/tbody/tr").Count;
-            
-                for (int i = 1; i < maxCount; i++)
+                // Gets the link name for the selected Item
+                switch (scrap.ToLower())
                 {
-                    var itemLink = doc.DocumentNode.SelectSingleNode(
-                            $"/html/body/div[3]/div[2]/div[1]/div/div[2]/div[2]/div[5]/div/table/tbody/tr[{i}]/td[1]/div[2]/a")
-                        .Attributes["href"].Value;
-                    lbStepsView.Items.Add(itemLink);
+                    case "items":
+                        scraps.Add("item");
+                        break;
+                    case "dutys":
+                        scraps.Add("duty");
+                        break;
+                    case "quests":
+                        scraps.Add("quest");
+                        break;
+                    case "crafting":
+                        scraps.Add("recipe");
+                        break;
+                    case "gathering":
+                        scraps.Add("gathering");
+                        break;
+                    case "achievements":
+                        scraps.Add("achievement");
+                        break;
+                    case "shops":
+                        scraps.Add("shop");
+                        break;
+                    case "text commands":
+                        scraps.Add("text_command");
+                        break;
+                    default:
+                        continue;
                 }
-                RefreshPage();
+
+                // Creates a new Dictionary entry with an empty queue
+                siteQueue.Add(scraps[scraps.Count - 1], new Queue<HtmlDocument>());
             }
         }
 
-        private void RefreshPage()
+        private void LoadSites(string scrapName)
         {
-            // Increments the current page and loads the site with the new current page
-            currentPage++;
-            doc = web.Load($"https://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?page={currentPage}");
-            
-            // Updates the Progressbar and the label for the page count
-            progressBar.Value = currentPage;
-            lblPageCount.Text = $@"{currentPage} / {maxPage}";
+            var index = scraps.IndexOf(scrapName);
+            scrapName = scrapName.ToUpper();
+            UpdateView($"Started Loading: {scrapName}");
+
+            var url = $"https://eu.finalfantasyxiv.com/lodestone/playguide/db/{scraps[index]}/?page=1";
+
+            var web = new HtmlWeb();
+            var document = web.Load(url);
+
+            var currentMaxSites = GetMaxSite(document);
+
+            var tempQueue = new Queue<HtmlDocument>();
+
+            for (var currentSite = 1; currentSite < currentMaxSites; currentSite++)
+            {
+                UpdateView($"{scrapName} at page: {currentSite}/{currentMaxSites}");
+                url = $"https://eu.finalfantasyxiv.com/lodestone/playguide/db/{scraps[index]}/?page={currentSite}";
+                document = web.Load(url);
+                tempQueue.Enqueue(document);
+            }
+
+            siteQueue[scraps[index]] = tempQueue;
+
+            UpdateView($"Finished: {scrapName}");
+
+            if (itemsOnSite != null && !itemsOnSite.IsCompleted)
+            {
+                tasksToRun?.Enqueue(scraps[index]);
+                UpdateView($"Queued: {scrapName}");
+                return;
+            }
+            itemsOnSite = Task.Run(() => GetItemsInDocument(tempQueue, scraps[index]));
         }
 
-        private void GetMaxPage()
+        private void GetItemsInDocument(Queue<HtmlDocument> documents, string name = "",bool inQueue = false)
         {
-            // Gets the Node of the Max Page and gets the Href attribute value
-            var temp = doc.DocumentNode
-                .SelectSingleNode("/html/body/div[3]/div[2]/div[1]/div/div[2]/div[2]/div[3]/div[2]/div/ul/li[9]/a")
-                .Attributes["href"].Value;
+            if (inQueue)
+                name = tasksToRun.Peek();
             
-            // Removes everything to the '=' character
-            temp = temp.Remove(0, temp.IndexOf("=") + 1);
+            OnScrapUpdate?.Invoke(name);
+            OnViewUpdate?.Invoke($"Started Scrapping: {name}");
+
+            // Actual scrapping
+            var documentCount = documents.Count;
+
+            for (var i = 0; i < documentCount; i++)
+            {
+                var currentDocument = documents.Dequeue();
+                
+                // Gets all the tr elements in the document
+                var tbodyElements = currentDocument.DocumentNode.SelectNodes(".//div[@class='db-table__wrapper']/table/tbody/tr");
+                
+                OnProgressUpdate?.Invoke($"Page {i + 1} / {documentCount}", (i + 1) / documentCount * 100);
+                
+                foreach (var tr in tbodyElements)
+                {
+                    // In the tr element it gets the a element to have access to the href value
+                    var link = tr.SelectSingleNode(".//a[@class='db_popup db-table__txt--detail_link']").Attributes["href"]
+                        .Value;
+                    UpdateView(link);
+                }
+            }
             
+            // Checks if any other tasks are queued and runs the next task if there is a queue
+            if (tasksToRun?.Count > 0)
+                itemsOnSite = Task.Run(() => GetItemsInDocument(siteQueue[tasksToRun.Dequeue()], null , true));
+        }
+
+        private int GetMaxSite(HtmlDocument document)
+        {
+            var link = document.DocumentNode.SelectSingleNode(".//a[@rel='last']").Attributes["href"].Value;
+
+            //Removes everything to the '=' character
+            link = link.Remove(0, link.IndexOf("=") + 1);
+
             //Tries to parse the temporary string to an int
-            Int32.TryParse(temp, out maxPage);
+            if (int.TryParse(link, out var maxPage))
+                return maxPage;
+            return -1;
+        }
+
+        private void UpdateView(string text)
+        {
+            var sendingText = $"{DateTime.Now:hh:mm:ss}: {text}";
+            OnViewUpdate?.Invoke(sendingText);
         }
     }
 }
