@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Threading.Tasks;
+using DatabaseCreatorFFXIV.Managers;
 using HtmlAgilityPack;
 
 namespace DatabaseCreatorFFXIV
@@ -13,12 +13,12 @@ namespace DatabaseCreatorFFXIV
         public Action<string> OnScrapUpdate;
         public Action<string> OnViewUpdate;
 
-        private int maxSites = 0;
 
+        private DatabaseManager dbManager = new DatabaseManager();
+        
         private Dictionary<string, Queue<HtmlDocument>> siteQueue = new Dictionary<string, Queue<HtmlDocument>>();
         private List<string> scraps = new List<string>();
-        private List<string> selectedItems;
-        
+
         private Queue<string> tasksToRun = new Queue<string>();
         private Task itemsOnSite;
 
@@ -116,11 +116,15 @@ namespace DatabaseCreatorFFXIV
 
         private void GetItemsInDocument(Queue<HtmlDocument> documents, string name = "",bool inQueue = false)
         {
+            
+            
             if (inQueue)
                 name = tasksToRun.Peek();
             
             OnScrapUpdate?.Invoke(name);
-            OnViewUpdate?.Invoke($"Started Scrapping: {name}");
+            UpdateView($"Started Scrapping: {name.ToUpper()}");
+            
+            dbManager.CreateDatabase("Databases", $"{name}.db");
 
             // Actual scrapping
             var documentCount = documents.Count;
@@ -139,9 +143,13 @@ namespace DatabaseCreatorFFXIV
                     // In the tr element it gets the a element to have access to the href value
                     var link = tr.SelectSingleNode(".//a[@class='db_popup db-table__txt--detail_link']").Attributes["href"]
                         .Value;
-                    UpdateView(link);
+                    dbManager.AddDatabaseEntry("Test", "This is a id", link);
                 }
             }
+            
+            dbManager.CloseDatabase();
+            
+            UpdateView($"Done Scrapping: {name.ToUpper()}");
             
             // Checks if any other tasks are queued and runs the next task if there is a queue
             if (tasksToRun?.Count > 0)

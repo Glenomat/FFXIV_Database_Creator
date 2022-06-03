@@ -97,7 +97,6 @@
             <DependentUpon>MainWindow.cs</DependentUpon>
         </Compile>
         <Compile Include="Managers\DatabaseManager.cs" />
-        <Compile Include="Managers\FileManager.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Scrapper.cs" />
@@ -126,9 +125,6 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="Links.json" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

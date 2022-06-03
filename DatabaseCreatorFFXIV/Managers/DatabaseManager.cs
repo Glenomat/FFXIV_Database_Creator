@@ -1,5 +1,7 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Data.SQLite;
+using System.IO;
+using System.Windows.Forms;
 
 namespace DatabaseCreatorFFXIV.Managers
 {
@@ -7,17 +9,41 @@ namespace DatabaseCreatorFFXIV.Managers
     {
         private SQLiteConnection connection;
         private SQLiteCommand command;
-        
-        public DatabaseManager()
+        private string tableName = "";
+
+        public void CreateDatabase(string dir, string fileName)
         {
-            // SQLiteConnection conn = new SQLiteConnection("Data Source=database.db");
-            // SQLiteConnection.CreateFile("database.db");
-            // conn.Open();
-            // SQLiteCommand a = new SQLiteCommand(@"CREATE TABLE contacts (first_name TEXT NOT NULL,);", conn);
-            // a.ExecuteNonQuery();
-            // conn.Close();
+            var path = $"/{dir}/{fileName}";
+            
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            if(File.Exists(path))
+                File.Delete(path);
+            
+            SQLiteConnection.CreateFile(Application.StartupPath + "/" + path);
+            
+            connection = new SQLiteConnection($"Data Source={Application.StartupPath + "/" + path}");
+            connection.Open();
+
+            command = connection.CreateCommand();
+            
+            tableName = fileName.Remove(fileName.IndexOf("."),3);
+            
+            command.CommandText = $@"CREATE TABLE ""{tableName}""(""Name"" TEXT,""Id"" TEXT,""Link"" TEXT);";
+            
+            command.ExecuteNonQuery();
         }
 
-        ~DatabaseManager() => connection?.Close();
+        public void AddDatabaseEntry(string name, string id, string link)
+        {
+            command.CommandText =
+                $@"
+                INSERT INTO {tableName} (""Name"", ""Id"", ""Link"")
+                VALUES (""{name}"", ""{id}"", ""{link}"");
+                ";
+            command.ExecuteNonQuery();
+        }
+        
+        public void CloseDatabase() => connection?.Close();
     }
 }
